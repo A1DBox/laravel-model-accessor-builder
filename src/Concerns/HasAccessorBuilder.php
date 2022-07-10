@@ -49,7 +49,7 @@ trait HasAccessorBuilder
 
     protected function mutateAttribute($key, $value)
     {
-        $accessor = $this->{'get' . Str::studly($key) . 'Attribute'}($value);
+        $accessor = parent::mutateAttribute($key, $value);
 
         if ($accessor instanceof AccessorBuilder) {
             if ($accessor->hasOriginalValue()) {
