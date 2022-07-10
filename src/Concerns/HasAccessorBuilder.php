@@ -42,7 +42,7 @@ trait HasAccessorBuilder
             $query->addSelect($baseBuilder->getConnection()->raw(sprintf(
                 '(%s) AS %s',
                 $accessor->toSql(),
-                $name
+                $query->getGrammar()->wrap($name)
             )));
         }
     }
