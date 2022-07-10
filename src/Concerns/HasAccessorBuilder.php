@@ -29,7 +29,7 @@ trait HasAccessorBuilder
                 ));
             }
 
-            $accessor = $this->{'get' . Str::studly($name) . 'Attribute'}(null);
+            $accessor = parent::mutateAttribute($name, null);
 
             if (!$accessor instanceof AccessorBuilder) {
                 throw new UnexpectedValueException(sprintf(
