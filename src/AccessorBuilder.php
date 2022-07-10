@@ -9,7 +9,6 @@ use A1DBox\Laravel\ModelAccessorBuilder\Query\Grammar\MariaDbGrammar;
 use A1DBox\Laravel\ModelAccessorBuilder\Query\Grammar\MySqlGrammar;
 use A1DBox\Laravel\ModelAccessorBuilder\Query\Grammar\PostgresGrammar;
 use A1DBox\Laravel\ModelAccessorBuilder\Query\Grammar\SQLiteGrammar;
-use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use PDO;
