@@ -122,8 +122,7 @@ class AccessorBuilder
 
     public function resolveModelValue()
     {
-        $result = $this->executeResolver()->resolve($this->model->getAttributes());
-        return $result === '' ? null : $result;
+        return $this->executeResolver()->resolve($this->model->getAttributes());
     }
 
     protected function executeResolver(): Blueprint
