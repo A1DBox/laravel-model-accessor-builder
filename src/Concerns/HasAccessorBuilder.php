@@ -52,11 +52,16 @@ trait HasAccessorBuilder
         $accessor = parent::mutateAttribute($key, $value);
 
         if ($accessor instanceof AccessorBuilder) {
-            if ($accessor->hasOriginalValue()) {
-                return $accessor->getOriginalValue();
+            $attributeExists = array_key_exists(
+                $key,
+                $this->getAttributes()
+            );
+
+            if ($attributeExists) {
+                return $value;
             }
 
-            $accessor = $accessor->resolveModelValue();
+            return $accessor->resolveModelValue();
         }
 
         return $accessor;

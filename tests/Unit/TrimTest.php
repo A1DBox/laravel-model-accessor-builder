@@ -10,11 +10,10 @@ $model = new class extends Model {
         'to_trim' => 'John  ',
     ];
 
-    public function getTrimAttribute($value = null)
+    public function getTrimAttribute()
     {
         return AccessorBuilder::make(
             $this,
-            $value,
             fn(BlueprintCabinet $cabinet) => $cabinet
                 ->trim(
                     $cabinet->col('to_trim'),

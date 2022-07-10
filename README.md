@@ -34,11 +34,10 @@ class User extends Model
 {
     use HasAccessorBuilder;
     
-    public function getFullNameAttribute($value)
+    public function getFullNameAttribute()
     {
         return AccessorBuilder::make(
             $this,
-            $value,
             fn (AccessorBuilder\BlueprintCabinet $cabinet) => $cabinet->trim(
                 $cabinet->concat(
                     $cabinet->col('name'),

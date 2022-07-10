@@ -11,11 +11,10 @@ $model = new class extends Model {
         'last_name' => 'Doe',
     ];
 
-    public function getConcatAttribute($value = null)
+    public function getConcatAttribute()
     {
         return AccessorBuilder::make(
             $this,
-            $value,
             fn(BlueprintCabinet $cabinet) => $cabinet
                 ->concat(
                     $cabinet->col('name'),

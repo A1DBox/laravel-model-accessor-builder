@@ -8,11 +8,10 @@ use Illuminate\Support\Str;
 $model = new class extends Model {
     protected $guarded = [];
 
-    public function getFullNameAttribute($value = null)
+    public function getFullNameAttribute()
     {
         return AccessorBuilder::make(
             $this,
-            $value,
             fn(BlueprintCabinet $cabinet) => $cabinet->trim(
                 $cabinet->concat(
                     $cabinet->col('last_name'),

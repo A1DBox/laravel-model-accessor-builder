@@ -24,23 +24,20 @@ class AccessorBuilder
 
     protected $grammar;
 
-    protected $originalValue;
-
     protected $resolver;
 
     protected bool $isQuerySetup = false;
 
-    public function __construct(Model $model, $originalValue, callable $resolver)
+    public function __construct(Model $model, callable $resolver)
     {
         $this->model = $model;
-        $this->originalValue = $originalValue;
         $this->resolver = $resolver;
         $this->blueprintCabinet = new BlueprintCabinet($this);
     }
 
-    public static function make(Model $model, $originalValue, callable $resolver)
+    public static function make(Model $model, callable $resolver)
     {
-        return new static($model, $originalValue, $resolver);
+        return new static($model, $resolver);
     }
 
     protected function setupQuery()
@@ -100,17 +97,6 @@ class AccessorBuilder
         $grammar->setConnection($this->getConnection());
 
         return $this->grammar = $grammar;
-    }
-
-
-    public function getOriginalValue()
-    {
-        return $this->originalValue;
-    }
-
-    public function hasOriginalValue(): bool
-    {
-        return isset($this->originalValue);
     }
 
     public function getConnection()
