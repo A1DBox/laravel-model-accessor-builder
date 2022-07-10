@@ -3,6 +3,7 @@
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
 use A1DBox\Laravel\ModelAccessorBuilder\Model;
+use Illuminate\Support\Str;
 
 $model = new class extends Model {
     protected $attributes = [
@@ -32,6 +33,18 @@ it('generates concat SQL', function () use ($accessor) {
         ->toBe(<<<STR
 concat("name", ' ', "last_name")
 STR);
+});
+
+it('appends concat SQL to query', function () use ($model) {
+    $except = <<<SQL
+select *, (concat("name", ' ', "last_name")) AS "concat" from "concat_test"."*"
+SQL;
+
+    $sql = $model->newQuery()
+        ->withAccessor('concat')
+        ->toSql();
+
+    expect(Str::is($except, $sql))->toBeTrue();
 });
 
 it('does concat from attributes', function () use ($accessor) {
