@@ -37,7 +37,6 @@ class User extends Model
     public function getFullNameAttribute()
     {
         return AccessorBuilder::make(
-            $this,
             fn (AccessorBuilder\BlueprintCabinet $cabinet) => $cabinet->trim(
                 $cabinet->concat(
                     $cabinet->col('name'),

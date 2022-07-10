@@ -13,7 +13,6 @@ $model = new class extends Model {
     public function getTrimAttribute()
     {
         return AccessorBuilder::make(
-            $this,
             fn(BlueprintCabinet $cabinet) => $cabinet
                 ->trim(
                     $cabinet->col('to_trim'),
@@ -22,7 +21,7 @@ $model = new class extends Model {
     }
 };
 
-$accessor = $model->getTrimAttribute();
+$accessor = $model->getAttributeAccessorBuilder('trim');
 
 it('generates trim SQL', function () use ($accessor) {
     expect($accessor->toSql())

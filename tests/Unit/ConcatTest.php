@@ -14,7 +14,6 @@ $model = new class extends Model {
     public function getConcatAttribute()
     {
         return AccessorBuilder::make(
-            $this,
             fn(BlueprintCabinet $cabinet) => $cabinet
                 ->concat(
                     $cabinet->col('name'),
@@ -25,7 +24,7 @@ $model = new class extends Model {
     }
 };
 
-$accessor = $model->getConcatAttribute();
+$accessor = $model->getAttributeAccessorBuilder('concat');
 
 it('generates concat SQL', function () use ($accessor) {
     expect($accessor->toSql())

@@ -10,7 +10,6 @@ $model = new class extends Model {
     public function getFullNameAttribute()
     {
         return AccessorBuilder::make(
-            $this,
             fn(BlueprintCabinet $cabinet) => $cabinet
                 ->concat(
                     $cabinet->col('name'),
@@ -23,7 +22,6 @@ $model = new class extends Model {
     public function getFullNameTrimAttribute()
     {
         return AccessorBuilder::make(
-            $this,
             fn(BlueprintCabinet $cabinet) => $cabinet->trim(
                 $cabinet->concat(
                     $cabinet->col('last_name'),

@@ -5,7 +5,6 @@ namespace A1DBox\Laravel\ModelAccessorBuilder\Concerns;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use UnexpectedValueException;
 
 trait HasAccessorBuilder
@@ -21,23 +20,7 @@ trait HasAccessorBuilder
         }
 
         foreach ($accessors as $name) {
-            if (!$this->hasGetMutator($name)) {
-                throw new UnexpectedValueException(sprintf(
-                    'Accessor %s not found in model %s',
-                    $name,
-                    static::class
-                ));
-            }
-
-            $accessor = parent::mutateAttribute($name, null);
-
-            if (!$accessor instanceof AccessorBuilder) {
-                throw new UnexpectedValueException(sprintf(
-                    'Accessor %s not instanceof ' . AccessorBuilder::class,
-                    $name,
-                    static::class
-                ));
-            }
+            $accessor = $this->getAttributeAccessorBuilder($name);
 
             $query->addSelect($baseBuilder->getConnection()->raw(sprintf(
                 '(%s) AS %s',
@@ -47,11 +30,36 @@ trait HasAccessorBuilder
         }
     }
 
+    public function getAttributeAccessorBuilder($key)
+    {
+        if (!$this->hasGetMutator($key)) {
+            throw new UnexpectedValueException(sprintf(
+                'Accessor %s not found in model %s',
+                $key,
+                static::class
+            ));
+        }
+
+        $accessor = parent::mutateAttribute($key, null);
+
+        if (!$accessor instanceof AccessorBuilder) {
+            throw new UnexpectedValueException(sprintf(
+                'Accessor %s not instanceof ' . AccessorBuilder::class,
+                $key,
+                static::class
+            ));
+        }
+
+        $accessor->setModel($this);
+
+        return $accessor;
+    }
+
     protected function mutateAttribute($key, $value)
     {
-        $accessor = parent::mutateAttribute($key, $value);
+        try {
+            $accessor = $this->getAttributeAccessorBuilder($key);
 
-        if ($accessor instanceof AccessorBuilder) {
             $attributeExists = array_key_exists(
                 $key,
                 $this->getAttributes()
@@ -62,8 +70,9 @@ trait HasAccessorBuilder
             }
 
             return $accessor->resolveModelValue();
+        } catch (UnexpectedValueException $e) {
         }
 
-        return $accessor;
+        return parent::mutateAttribute($key, $value);
     }
 }
