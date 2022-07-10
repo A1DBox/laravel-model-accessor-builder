@@ -16,7 +16,7 @@ class Column extends Blueprint
 
     public function resolve(array $attributes)
     {
-        return $attributes[$this->column];
+        return $attributes[$this->column] ?? null;
     }
 
     public function toSql()
