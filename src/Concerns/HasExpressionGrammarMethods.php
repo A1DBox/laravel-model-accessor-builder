@@ -14,9 +14,24 @@ trait HasExpressionGrammarMethods
         $this->connection = $connection;
     }
 
+    public function compileTrim($value)
+    {
+        return $this->compileFunctionCall('trim', [$value]);
+    }
+
+    public function compileConcat(array $columns)
+    {
+        return $this->compileFunctionCall('concat', $columns);
+    }
+
     public function compileString(string $value)
     {
         return $this->connection->getPdo()->quote($value);
+    }
+
+    public function compileFunctionCall($name, array $arguments)
+    {
+        return sprintf('%s(%s)', $name, $this->joinArguments($arguments));
     }
 
     public function compileColumnName(string $column, $table)

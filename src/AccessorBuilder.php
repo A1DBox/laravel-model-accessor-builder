@@ -100,8 +100,13 @@ class AccessorBuilder
 
     public function setModel(Model $model)
     {
-        $this->model = $model;
+        $this->model = $model->withoutRelations();
         return $this;
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
     }
 
     public function getConnection()

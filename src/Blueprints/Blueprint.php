@@ -23,11 +23,19 @@ abstract class Blueprint
 
     abstract public function toSql();
 
-    public function prepare(AccessorBuilder $accessorBuilder)
+    /**
+     * @param AccessorBuilder|self $from
+     * @return $this
+     */
+    public function prepare($from)
     {
-        $this->accessorBuilder = $accessorBuilder;
-        $this->grammar = $accessorBuilder->getGrammar();
-        $this->connection = $accessorBuilder->getConnection();
+        if ($from instanceof Blueprint) {
+            $from = $from->accessorBuilder;
+        }
+
+        $this->accessorBuilder = $from;
+        $this->grammar = $from->getGrammar();
+        $this->connection = $from->getConnection();
 
         return $this;
     }
@@ -46,6 +54,20 @@ abstract class Blueprint
         }
 
         return $isArray ? $result : Arr::first($result);
+    }
+
+    protected function toExpression()
+    {
+        return new AccessorBuilder\BlueprintExpressionAdapter($this);
+    }
+
+    protected function valueOrExpression($value)
+    {
+        if ($value instanceof self) {
+            return $value->toExpression();
+        }
+
+        return $value;
     }
 
     public function __toString()

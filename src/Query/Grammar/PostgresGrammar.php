@@ -9,14 +9,4 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar as Base;
 class PostgresGrammar extends Base implements ExpressionGrammar
 {
     use HasExpressionGrammarMethods;
-
-    public function compileTrim($value)
-    {
-        return 'trim(' . $value . ')';
-    }
-
-    public function compileConcat(array $columns)
-    {
-        return 'concat(' . $this->joinArguments($columns) . ')';
-    }
 }
