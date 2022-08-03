@@ -5,8 +5,12 @@ namespace A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Blueprint;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Column;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\CountAgg;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\JsonAgg;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Coalesce;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Concat;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Trim;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Text;
 
 class BlueprintCabinet
@@ -36,6 +40,26 @@ class BlueprintCabinet
     public function concat(...$columns)
     {
         return $this->prepare(new Concat($columns));
+    }
+
+    public function coalesce(...$columns)
+    {
+        return $this->prepare(new Coalesce($columns));
+    }
+
+    public function jsonAgg($column)
+    {
+        return $this->prepare(new JsonAgg($column));
+    }
+
+    public function countAgg($column = '*')
+    {
+        return $this->prepare(new CountAgg($column));
+    }
+
+    public function relation($name, callable $callback)
+    {
+        return $this->prepare(new Relation($name, $callback));
     }
 
     protected function prepare(Blueprint $blueprint): Blueprint

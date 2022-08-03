@@ -15,6 +15,11 @@ abstract class Blueprint
 
     protected Connection $connection;
 
+    public static function create()
+    {
+        return new static;
+    }
+
     /**
      * @param array $attributes All attributes from model
      * @return string
@@ -23,13 +28,40 @@ abstract class Blueprint
 
     abstract public function toSql();
 
-    public function prepare(AccessorBuilder $accessorBuilder)
+    protected function tryResolveValue($blueprint, array $attributes, &$value)
     {
-        $this->accessorBuilder = $accessorBuilder;
-        $this->grammar = $accessorBuilder->getGrammar();
-        $this->connection = $accessorBuilder->getConnection();
+        if ($blueprint instanceof self) {
+            $value = $blueprint->resolve($attributes);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AccessorBuilder|self $from
+     * @return $this
+     */
+    public function prepare($from)
+    {
+        if ($from instanceof self) {
+            $from = $from->accessorBuilder;
+        }
+
+        $this->accessorBuilder = $from;
+        $this->grammar = $from->getGrammar();
+        $this->connection = $from->getConnection();
 
         return $this;
+    }
+
+    /**
+     * @param Blueprint $blueprint
+     * @return static
+     */
+    protected function make(self $blueprint)
+    {
+        return $blueprint->prepare($this);
     }
 
     protected function resolveValue($value, array $attributes)
@@ -46,6 +78,11 @@ abstract class Blueprint
         }
 
         return $isArray ? $result : Arr::first($result);
+    }
+
+    protected function toExpression()
+    {
+        return new AccessorBuilder\BlueprintExpressionAdapter($this);
     }
 
     public function __toString()

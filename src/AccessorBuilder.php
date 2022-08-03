@@ -104,6 +104,11 @@ class AccessorBuilder
         return $this;
     }
 
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
+
     public function getConnection()
     {
         $this->setupQuery();
