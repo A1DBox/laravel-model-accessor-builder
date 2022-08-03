@@ -1,10 +1,11 @@
 <?php
 
+namespace A1DBox\Laravel\ModelAccessorBuilder\Feature;
+
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation\Query;
 use A1DBox\Laravel\ModelAccessorBuilder\Model;
-use Illuminate\Support\Str;
 
 class RelationTestTag extends Model {
     protected $table = 'tags';
@@ -83,9 +84,9 @@ it('returns relation column with jsonAgg', function () {
     ]);
     $model->setRelation('tags', collect([
         ['id' => 1, 'user_id' => 100, 'name' => 'News'],
-        ['id' => 1, 'user_id' => 100, 'name' => 'Animals'],
-        ['id' => 1, 'user_id' => 100, 'name' => 'Politics'],
-        ['id' => 1, 'user_id' => 100, 'name' => 'History'],
+        ['id' => 2, 'user_id' => 100, 'name' => 'Animals'],
+        ['id' => 3, 'user_id' => 100, 'name' => 'Politics'],
+        ['id' => 4, 'user_id' => 100, 'name' => 'History'],
     ])->map([RelationTestTag::class, 'make']));
 
     expect($model->getAttribute('tags_json'))->toBe(<<<JSON

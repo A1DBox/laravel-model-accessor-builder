@@ -6,6 +6,8 @@ use A1DBox\Laravel\ModelAccessorBuilder\Model;
 use Illuminate\Support\Str;
 
 $model = new class extends Model {
+    protected $table = 'users';
+
     protected $attributes = [
         'to_trim' => 'John  ',
     ];
@@ -23,26 +25,25 @@ $model = new class extends Model {
 
 $accessor = $model->getAttributeAccessorBuilder('trim');
 
-it('generates trim SQL', function () use ($accessor) {
+it('generates trim() SQL', function () use ($accessor) {
     expect($accessor->toSql())
         ->toBe(<<<STR
 trim("to_trim")
 STR);
 });
 
-it('appends trim SQL to query', function () use ($model) {
-    $except = <<<SQL
-select *, (trim("to_trim")) AS "trim" from "trim_test"."*"
+it('appends trim() SQL to query', function () use ($model) {
+    $sql = <<<SQL
+select *, (trim("to_trim")) AS "trim" from "users"
 SQL;
 
-    $sql = $model->newQuery()
+    expect($sql)->toBe($model->newQuery()
         ->withAccessor('trim')
-        ->toSql();
-
-    expect(Str::is($except, $sql))->toBeTrue();
+        ->toSql()
+    );
 });
 
-it('does trim on attribute', function () use ($accessor) {
+it('does trim() on attribute', function () use ($accessor) {
     expect($accessor->resolveModelValue())
         ->toBe('John');
 });
