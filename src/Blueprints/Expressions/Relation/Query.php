@@ -1,13 +1,13 @@
 <?php
 
-namespace A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation;
+namespace A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\Relation;
 
-use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Blueprint;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\BlueprintExpression;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\BlueprintAggregate;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\ColumnAgg;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 
-class Query extends Blueprint
+class Query extends BlueprintExpression
 {
     protected $relation;
 

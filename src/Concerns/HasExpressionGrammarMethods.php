@@ -3,6 +3,7 @@
 namespace A1DBox\Laravel\ModelAccessorBuilder\Concerns;
 
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Column;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\BlueprintExpression;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -74,6 +75,15 @@ trait HasExpressionGrammarMethods
 
     protected function joinArguments(array $items)
     {
-        return implode(', ', $items);
+        $result = [];
+        foreach ($items as $item) {
+            if ($item instanceof BlueprintExpression) {
+                $result[] = sprintf('(%s)', $item);
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        return implode(', ', $result);
     }
 }

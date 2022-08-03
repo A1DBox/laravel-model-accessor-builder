@@ -1,8 +1,8 @@
 <?php
 
-namespace A1DBox\Laravel\ModelAccessorBuilder\Blueprints;
+namespace A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions;
 
-use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation\Query;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\Relation\Query;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
@@ -10,7 +10,7 @@ use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
-class Relation extends Blueprint
+class Relation extends BlueprintExpression
 {
     protected $name;
 

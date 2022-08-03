@@ -1,10 +1,8 @@
 <?php
 
-namespace A1DBox\Laravel\ModelAccessorBuilder\Feature;
-
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
-use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation\Query;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\Relation\Query;
 use A1DBox\Laravel\ModelAccessorBuilder\Model;
 
 class RelationTestTag extends Model {
@@ -63,6 +61,26 @@ class RelationTestUser extends Model {
                 )
         );
     }
+
+    public function getFullNameWithTagsCountAttribute()
+    {
+        return AccessorBuilder::make(
+            //Expected result: "John Doe (tags count: 2)"
+            fn(BlueprintCabinet $cabinet) => $cabinet
+                ->concat(
+                    $cabinet->col('name'),
+                    $cabinet->str(' '),
+                    $cabinet->col('last_name'),
+                    $cabinet->str(' (tags count: '),
+                    $cabinet->relation('tags', fn(Query $query) =>
+                        $query->select(
+                            $cabinet->countAgg()
+                        )
+                    ),
+                    $cabinet->str(')'),
+                )
+        );
+    }
 }
 
 it('generates SQL of relation aggregating json', function () {
@@ -111,6 +129,19 @@ SQL;
 
     expect($sql)->toBe($model->newQuery()
         ->withAccessor('tags_custom_count')
+        ->toSql()
+    );
+});
+
+it('generates SQL of relation aggregating count into concat()', function () {
+    $sql = <<<SQL
+select *, (concat("name", ' ', "last_name", ' (tags count: ', (select count(*) from "tags" where "tags"."user_id" = "users"."id" and "tags"."user_id" is not null), ')')) AS "full_name_with_tags_count" from "users"
+SQL;
+
+    $model = new RelationTestUser;
+
+    expect($sql)->toBe($model->newQuery()
+        ->withAccessor('full_name_with_tags_count')
         ->toSql()
     );
 });
