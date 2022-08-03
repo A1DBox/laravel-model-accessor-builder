@@ -14,9 +14,13 @@ interface ExpressionGrammar
 
     public function compileConcat(array $columns);
 
+    public function compileCoalesce(array $values);
+
+    public function compileCount($expression);
+
     public function compileString(string $value);
 
-    public function compileColumnName(string $column, $table);
+    public function compileColumnName($column, $table = null);
 
     public function setConnection(Connection $connection);
 }

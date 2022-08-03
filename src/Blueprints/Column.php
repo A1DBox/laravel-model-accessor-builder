@@ -2,7 +2,9 @@
 
 namespace A1DBox\Laravel\ModelAccessorBuilder\Blueprints;
 
-class Column extends Blueprint
+use A1DBox\Laravel\ModelAccessorBuilder\Contracts\BlueprintHasColumnName;
+
+class Column extends Blueprint implements BlueprintHasColumnName
 {
     protected $table;
 
@@ -22,5 +24,10 @@ class Column extends Blueprint
     public function toSql()
     {
         return $this->grammar->compileColumnName($this->column, $this->table);
+    }
+
+    public function getColumnName(): string
+    {
+        return $this->column;
     }
 }
