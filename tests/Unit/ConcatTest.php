@@ -1,9 +1,12 @@
 <?php
 
+/** @noinspection SqlNoDataSourceInspection SqlResolve */
+
+namespace A1DBox\Laravel\ModelAccessorBuilder\Tests\Unit;
+
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
-use A1DBox\Laravel\ModelAccessorBuilder\Model;
-use Illuminate\Support\Str;
+use A1DBox\Laravel\ModelAccessorBuilder\Tests\Models\Model;
 
 $model = new class extends Model {
     protected $table = 'users';
@@ -29,10 +32,12 @@ $model = new class extends Model {
 $accessor = $model->getAttributeAccessorBuilder('concat');
 
 it('generates concat() SQL', function () use ($accessor) {
-    expect($accessor->toSql())
-        ->toBe(<<<STR
+    $sql = <<<CALL
 concat("name", ' ', "last_name")
-STR);
+CALL;
+
+    expect($accessor->toSql())
+        ->toBe($sql);
 });
 
 it('appends concat() SQL to query', function () use ($model) {

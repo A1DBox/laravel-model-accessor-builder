@@ -1,8 +1,12 @@
 <?php
 
+/** @noinspection SqlNoDataSourceInspection SqlResolve */
+
+namespace A1DBox\Laravel\ModelAccessorBuilder\Tests\Unit;
+
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
-use A1DBox\Laravel\ModelAccessorBuilder\Model;
+use A1DBox\Laravel\ModelAccessorBuilder\Tests\Models\Model;
 
 $model = new class extends Model {
     protected $table = 'users';
@@ -39,10 +43,12 @@ $accessorName = $model->getAttributeAccessorBuilder('name');
 $accessorLastName = $model->getAttributeAccessorBuilder('last_name');
 
 it('generates coalesce() SQL', function () use ($accessorName) {
-    expect($accessorName->toSql())
-        ->toBe(<<<STR
+    $sql = <<<CALL
 coalesce("name", '<empty>')
-STR);
+CALL;
+
+    expect($accessorName->toSql())
+        ->toBe($sql);
 });
 
 it('appends coalesce() SQL to query', function () use ($model) {
