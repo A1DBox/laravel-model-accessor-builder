@@ -5,12 +5,12 @@ namespace A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Blueprint;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Column;
+use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Expressions\Relation;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\CountAgg;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Aggregate\JsonAgg;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Coalesce;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Concat;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Functions\Trim;
-use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Relation;
 use A1DBox\Laravel\ModelAccessorBuilder\Blueprints\Text;
 
 class BlueprintCabinet

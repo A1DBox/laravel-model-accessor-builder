@@ -1,11 +1,16 @@
 <?php
 
+/** @noinspection SqlNoDataSourceInspection SqlResolve */
+
+namespace A1DBox\Laravel\ModelAccessorBuilder\Tests\Unit;
+
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
 use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
-use A1DBox\Laravel\ModelAccessorBuilder\Model;
-use Illuminate\Support\Str;
+use A1DBox\Laravel\ModelAccessorBuilder\Tests\Models\Model;
 
 $model = new class extends Model {
+    protected $table = 'users';
+
     protected $attributes = [
         'name' => 'John',
         'last_name' => 'Doe',
@@ -26,26 +31,27 @@ $model = new class extends Model {
 
 $accessor = $model->getAttributeAccessorBuilder('concat');
 
-it('generates concat SQL', function () use ($accessor) {
-    expect($accessor->toSql())
-        ->toBe(<<<STR
+it('generates concat() SQL', function () use ($accessor) {
+    $sql = <<<CALL
 concat("name", ' ', "last_name")
-STR);
+CALL;
+
+    expect($accessor->toSql())
+        ->toBe($sql);
 });
 
-it('appends concat SQL to query', function () use ($model) {
-    $except = <<<SQL
-select *, (concat("name", ' ', "last_name")) AS "concat" from "concat_test"."*"
+it('appends concat() SQL to query', function () use ($model) {
+    $sql = <<<SQL
+select *, (concat("name", ' ', "last_name")) AS "concat" from "users"
 SQL;
 
-    $sql = $model->newQuery()
+    expect($sql)->toBe($model->newQuery()
         ->withAccessor('concat')
-        ->toSql();
-
-    expect(Str::is($except, $sql))->toBeTrue();
+        ->toSql()
+    );
 });
 
-it('does concat from attributes', function () use ($accessor) {
+it('does concat() from attributes', function () use ($accessor) {
     expect($accessor->resolveModelValue())
         ->toBe('John Doe');
 });

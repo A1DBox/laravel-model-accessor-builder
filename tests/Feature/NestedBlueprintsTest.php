@@ -1,75 +1,39 @@
 <?php
 
-use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder;
-use A1DBox\Laravel\ModelAccessorBuilder\AccessorBuilder\BlueprintCabinet;
-use A1DBox\Laravel\ModelAccessorBuilder\Model;
-use Illuminate\Support\Str;
+/** @noinspection SqlNoDataSourceInspection SqlResolve */
 
-$model = new class extends Model {
-    protected $table = 'test';
+namespace A1DBox\Laravel\ModelAccessorBuilder\Tests\Feature;
 
-    protected $guarded = [];
+use A1DBox\Laravel\ModelAccessorBuilder\Tests\Models\User;
 
-    public function getFullNameAttribute()
-    {
-        return AccessorBuilder::make(
-            fn(BlueprintCabinet $cabinet) => $cabinet->trim(
-                $cabinet->concat(
-                    $cabinet->col('last_name'),
-                    $cabinet->str(' '),
-                    $cabinet->col('name'),
-                    $cabinet->str(' '),
-                    $cabinet->col('middle_name'),
-                )
-            )
-        );
-    }
-
-    public function getFullNameQualifiedAttribute()
-    {
-        return AccessorBuilder::make(
-            fn(BlueprintCabinet $cabinet) => $cabinet->trim(
-                $cabinet->concat(
-                    $cabinet->col('last_name', $this),
-                    $cabinet->str(' '),
-                    $cabinet->col('name', 'test'),
-                    $cabinet->str(' '),
-                    $cabinet->col('middle_name', $this),
-                )
-            )
-        );
-    }
-};
-
-it('generates trim(concat()) SQL', function () use ($model) {
+it('generates trim(concat()) SQL', function () {
     $sql = <<<SQL
-select *, (trim(concat("last_name", ' ', "name", ' ', "middle_name"))) AS "full_name" from "test"
+select *, (trim(concat("last_name", ' ', "name", ' ', "middle_name"))) AS "full_name_trim" from "users"
 SQL;
 
-    expect($sql)->toBe($model->newQuery()
-        ->withAccessor('full_name')
+    expect(User::query()
+        ->withAccessor('full_name_trim')
         ->toSql()
-    );
+    )->toBe($sql);
 });
 
-it('generates trim(concat()) SQL with qualified table', function () use ($model) {
+it('generates trim(concat()) SQL with qualified table', function () {
     $sql = <<<SQL
-select *, (trim(concat("test"."last_name", ' ', "test"."name", ' ', "test"."middle_name"))) AS "full_name_qualified" from "test"
+select *, (trim(concat("users"."last_name", ' ', "users"."name", ' ', "users"."middle_name"))) AS "full_name_trim_qualified" from "users"
 SQL;
 
-    expect($sql)->toBe($model->newQuery()
-        ->withAccessor('full_name_qualified')
+    expect(User::query()
+        ->withAccessor('full_name_trim_qualified')
         ->toSql()
-    );
+    )->toBe($sql);
 });
 
-it('does trim(concat()) on attributes', function () use ($model) {
-    $model->fill([
-        'last_name' => 'John',
-        'name' => 'Doe',
-        'middle_name' => '',
-    ]);
-
-    expect($model->getAttribute('full_name'))
-        ->toBe('John Doe');
+it('does trim(concat()) on attributes', function () {
+    expect(
+        User::make([
+            'last_name' => 'John',
+            'name' => 'Doe',
+            'middle_name' => '',
+        ])->getAttribute('full_name_trim')
+    )->toBe('John Doe');
 });
